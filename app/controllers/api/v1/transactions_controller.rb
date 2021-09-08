@@ -32,6 +32,26 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def extract
+    dates = params.require(:dates).split(',')
+
+    statement_transactions = Transaction.where(
+      "date >= :start_date AND date <= :end_date",
+      {start_date: dates[0], end_date: dates[1]
+    })
+
+    previous_period = Transaction.where("date < :start_date", {start_date: dates[0]})
+    
+    start_balance = previous_period.sum(:debit) - previous_period.sum(:credit)
+    end_balance = start_balance + statement_transactions.sum(:debit) - 
+      statement_transactions.sum(:credit)
+
+    render json: {
+      start_date: dates[0],
+      end_date: dates[1],
+      start_balance: start_balance,
+      end_balance: end_balance,
+      statement_transactions: statement_transactions
+    }
   end
 
   private
