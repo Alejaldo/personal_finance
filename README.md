@@ -6,7 +6,7 @@ Simple demo API-only Rails app for personal finance. It is for development mode 
 
 + Ruby version: 2.7.2
 + Rails versin: 6.1.4
-+ PostgreSQL (for production)
++ PostgreSQL
 + RSpec
 
 ## Installation
