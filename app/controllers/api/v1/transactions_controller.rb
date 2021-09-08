@@ -1,5 +1,6 @@
 class Api::V1::TransactionsController < ApplicationController
-  before_action :set_transaction, only: [:show, :update, :destroy]
+  before_action :authenticate_user!
+  before_action :set_transaction, only: %i[show update destroy]
 
   def index
     @transactions = Transaction.all
