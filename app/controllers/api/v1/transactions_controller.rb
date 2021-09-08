@@ -1,5 +1,5 @@
 class Api::V1::TransactionsController < ApplicationController
-  before_action :authenticate_user!
+#  before_action :authenticate_user!
   before_action :set_transaction, only: %i[show update destroy]
 
   def index
@@ -11,8 +11,13 @@ class Api::V1::TransactionsController < ApplicationController
     render json: @transaction
   end
 
+  def new
+    @transaction = current_user.transactions.build
+  end
+
   def create
-    @transaction = Transaction.new(transaction_params)
+    @transaction = current_user.transactions.build(transaction_params)
+
     if @transaction.save
       render json: @transaction, status: :created, location: api_v1_transaction_url(@transaction)
     else
@@ -62,6 +67,6 @@ class Api::V1::TransactionsController < ApplicationController
   end
 
   def transaction_params
-    params.require(:transaction).permit(:name, :date, :debit, :credit)
+    params.require(:transaction).permit(:name, :date, :debit, :credit, :user_id)
   end
 end
