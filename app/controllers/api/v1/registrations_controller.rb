@@ -3,7 +3,7 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
   skip_before_action :verify_authenticity_token, :only => :create
 
   def create
-    user = User.new user_params
+    user = User.new(user_params)
 
     if user.save
       render json: {

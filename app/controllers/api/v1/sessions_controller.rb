@@ -1,38 +1,41 @@
-class Api::V1::RegistrationsController < Devise::RegistrationsController
-  before_action :ensure_params_exist, only: :create
-  skip_before_action :verify_authenticity_token, :only => :create
-
+class Api::V1::SessionsController < Devise::SessionsController
+  before_action :sign_in_params, only: :create
+  before_action :load_user, only: :create
+  protect_from_forgery with: :reset_session
+  
   def create
-    user = User.new user_params
-
-    if user.save
+    if @user.valid_password?(sign_in_params[:password])
+      sign_in "user", @user
       render json: {
-        messages: "Sign Up Successfully",
+        messages: "Signed In Successfully",
         is_success: true,
-        data: {user: user}
+        data: {user: @user}
       }, status: :ok
     else
       render json: {
-        messages: "Sign Up Failded",
+        messages: "Signed In Failed - Unauthorized",
         is_success: false,
         data: {}
-      }, status: :unprocessable_entity
+      }, status: :unauthorized
     end
   end
 
   private
 
-  def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+  def sign_in_params
+    params.require(:user).permit(:email, :password)
   end
 
-  def ensure_params_exist
-    return if params[:user].present?
-    
-    render json: {
-        messages: "Missing Params",
+  def load_user
+    @user = User.find_for_database_authentication(email: sign_in_params[:email])
+    if @user
+      return @user
+    else
+      render json: {
+        messages: "Cannot get User",
         is_success: false,
         data: {}
-      }, status: :bad_request
+      }, status: :failure
+    end
   end
 end
