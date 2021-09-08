@@ -52,6 +52,7 @@ class Api::V1::TransactionsController < ApplicationController
       statement_transactions.sum(:credit)
 
     render json: {
+      client: current_user.email,
       start_date: dates[0],
       end_date: dates[1],
       start_balance: start_balance,
