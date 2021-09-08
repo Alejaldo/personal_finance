@@ -1,6 +1,6 @@
 Personal finance
 ======================
-Simple demo api-only rails app for personal finance. It is for development mode only. Use [Postman](https://www.postman.com/downloads/) for the app exploring.
+Simple demo API-only Rails app for personal finance. It is for development mode only. Use [Postman](https://www.postman.com/downloads/) for the app exploring.
 ----------------------
 ## Configuration
 
